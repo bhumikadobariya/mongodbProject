@@ -1,26 +1,23 @@
-var url = 'mongodb://localhost:27017/train12';
+var url = 'mongodb://localhost:27020/train12';
 var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var tableDisplay = require('./displayTable.js');
 var choiceTask = process.argv[2];
-var range = +(process.argv[3]);
+var range = process.argv[3];
+
+range = (range === undefined) ? 10 : +(range);
 
 //for agreegate the requried field
 var trainDetail = function (train,sortOrder,fieldForGrouping) {
   if (fieldForGrouping === 'distance') {
     var groupTrain = train.aggregate([{
       $group : {
-        _id: "$trainNo",
-        operationalTask: { $max: "$distance" },
-        "trainName": { "$last": "$trainName" },
-        "stationName": { "$last": "$stationName" },
-        'arrivalTime' : {'$last' : '$arrivalTime'},
-        "stationCode": {'$last' : '$stationCode'},
-        "departureTime": {'$last' : '$departureTime'},
-        "sourceCode": {'$last' : '$sourceCode'},
-        "sourceStation": {'$last' : '$sourceStation'},
-        "destinationCode": {'$last' : '$destinationCode'},
-        "destinationStation": {'$last' : '$destinationStation'},
+        _id: '$trainNo',
+        operationalTask: { $max: '$distance' },
+        'trainName': { '$last': '$trainName' },
+        'stationName': { '$last': '$stationName' },
+        'sourceStation': {'$last' : '$sourceStation'},
+        'destinationStation': {'$last' : '$destinationStation'},
       }
     }]).sort({ operationalTask : sortOrder }).limit(range).toArray(function(error,results) {
         tableDisplay.table_train(results,'Distance',choiceTask);
@@ -29,21 +26,16 @@ var trainDetail = function (train,sortOrder,fieldForGrouping) {
       if (fieldForGrouping === 'station') {
         field = '$trainNo';
       } else {
-        field = "$stationName";
+        field = '$stationName';
       }
     var groupTrain = train.aggregate([{
       $group : {
         _id: field,
         operationalTask: { $sum: 1 },
-        "trainName": { "$last": "$trainName" },
-        "stationName": { "$last": "$stationName" },
-        'arrivalTime' : {'$last' : '$arrivalTime'},
-        "stationCode": {'$last' : '$stationCode'},
-        "departureTime": {'$last' : '$departureTime'},
-        "sourceCode": {'$last' : '$sourceCode'},
-        "sourceStation": {'$last' : '$sourceStation'},
-        "destinationCode": {'$last' : '$destinationCode'},
-        "destinationStation": {'$last' : '$destinationStation'},
+        'trainName': { '$last': '$trainName' },
+        'stationName': { '$last': '$stationName' },
+        'sourceStation': {'$last' : '$sourceStation'},
+        'destinationStation': {'$last' : '$destinationStation'},
       }
     }]).sort({ operationalTask : sortOrder }).limit(range).toArray(function(error,results) {
           tableDisplay.table_train(results,'No.OfStation',choiceTask);

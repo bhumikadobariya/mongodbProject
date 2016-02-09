@@ -10,7 +10,7 @@ exports.table_train = function (docs,prop,choice) {
             'Destination Station Name',
             ]
     // , colWidths: [10, 18, 10, 18, 8 , 12]
-    , colWidths: [10, 16, 16, 8, 15, 12]
+      , colWidths: [10, 16, 16, 8, 15, 8]
     });
     if (choice === '1' || choice === '3' || choice === '5') {
       docs.forEach(function(doc) {
