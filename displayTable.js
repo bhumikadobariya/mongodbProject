@@ -10,12 +10,13 @@ exports.table_train = function (docs,prop,choice) {
             'Destination Station Name',
             ]
     // , colWidths: [10, 18, 10, 18, 8 , 12]
-      , colWidths: [10, 16, 16, 8, 15, 8]
+      , colWidths: [9, 16, 16, 8, 14, 8]
+      // ,colWidths: [10, 20, 18, 12, 20, 10]
     });
     if (choice === '1' || choice === '3' || choice === '5') {
       docs.forEach(function(doc) {
         table.push([
-          doc._id,
+          +(doc._id.slice(1,6)),
           doc.trainName,
           doc.stationName,
           doc.operationalTask,
@@ -26,7 +27,7 @@ exports.table_train = function (docs,prop,choice) {
     } else if (choice === '2' || choice === '4' || choice === '6') {
       docs.forEach(function(doc) {
         table.push([
-          doc._id,
+          +(doc._id.slice(1,6)),
           doc.trainName,
           doc.stationName,
           doc.operationalTask,

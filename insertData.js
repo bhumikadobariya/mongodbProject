@@ -6,11 +6,11 @@ MongoClient.connect(url, function(err, db) {
   if (err) throw err
   db.createCollection('train', function(err, collection){
     fs.readFile('train.csv', 'utf8', function (err, data) {
-    var array2=[];
+    var array2 = [];
     var lines = data.split('\n');
 
       for (var j = 0; j < lines.length; j++) {
-        var x=lines[j];
+        var x = lines[j];
 
         array2[j] = x.split(",");
         db.collection('train').insert({

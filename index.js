@@ -1,8 +1,8 @@
-var url = 'mongodb://localhost:27020/train12';
+var url = 'mongodb://localhost:27021/train12';
 var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var tableDisplay = require('./displayTable.js');
-var functions = require('./necessaryFunction.js');
+var functionsTrain = require('./necessaryFunction.js');
 var choiceTask = process.argv[2];
 var range = process.argv[3];
 
@@ -14,48 +14,67 @@ MongoClient.connect(url, function(err, db) {
   var train = db.collection('train');
 
   switch(choiceTask) {
+
     case '1' :
-        var trainDetailDistance = functions.trainDetail(train,-1,'distance',range,choiceTask);
+
+        var trainDetailDistance = functionsTrain.trainDetail(train,-1,'distance',range,choiceTask);
+
       break;
+
     case '2' :
-        var trainDetailDistance = functions.trainDetail(train,1,'distance',range,choiceTask);
+
+        var trainDetailDistance = functionsTrain.trainDetail(train,1,'distance',range,choiceTask);
+
       break;
+
     case '3' :
-        var resultFinal = [],index = 0;
-        train.find().sort({count : 1}).toArray(function(error,results) {
-          results = functions.hours(results).sort(functions.objectSort('operationalTask'));
-          resultsFinal = functions.minuteToHour(results);
-          // console.log(resultsFinal);
-          for ( i = resultsFinal.length - 1; i >= resultsFinal.length - range ; i -= 1) {
-            resultFinal[index] = resultsFinal[i];
-            index += 1;
-          }
-          tableDisplay.table_train(resultFinal,'Duration',choiceTask);
+
+        var index = 0;
+
+        train
+          .find()
+          .sort({count : 1})
+          .toArray(function(error,results) {
+
+            results = functionsTrain.hours(results).sort(functionsTrain.objectSort('operationalTask'));
+
+            resultsFinal = functionsTrain.minuteToHour(results);
+
+            resultsFinal = resultsFinal.slice(resultsFinal.length - range ,resultsFinal.length);
+            resultsFinal.reverse();
+
+            tableDisplay.table_train(resultsFinal,'Duration',choiceTask);
         });
+
       break;
+
     case '4' :
-        var resultFinal = [];
-        train.find().sort({count : 1}).toArray(function(error,results) {
-          results = functions.hours(results).sort(functions.objectSort('operationalTask'));
-          resultsFinal = functions.minuteToHour(results);
-          // console.log(resultsFinal);
-          for ( i = 0 ; i < range ; i += 1) {
-            resultFinal[i] = resultsFinal[i];
-          }
-          tableDisplay.table_train(resultFinal,'Duration',choiceTask);
+
+        train
+          .find()
+          .sort({count : 1})
+          .toArray(function(error,results) {
+
+            results = functionsTrain.hours(results).sort(functionsTrain.objectSort('operationalTask'));
+
+            resultsFinal = functionsTrain.minuteToHour(results);
+
+            resultsFinal = resultsFinal.slice(0 ,range);
+
+            tableDisplay.table_train(resultsFinal,'Duration',choiceTask);
         });
       break;
     case '5' :
-        var trainDetailStation = functions.trainDetail(train,-1,'station',range,choiceTask);
+        var trainDetailStation = functionsTrain.trainDetail(train,-1,'station',range,choiceTask);
       break;
     case '6' :
-        var trainDetailStation = functions.trainDetail(train,1,'station',range,choiceTask);
+        var trainDetailStation = functionsTrain.trainDetail(train,1,'station',range,choiceTask);
       break;
     case '7' :
-        var trainDetailStation = functions.trainDetail(train,-1,'stationVisited',range,choiceTask);
+        var trainDetailStation = functionsTrain.trainDetail(train,-1,'stationVisited',range,choiceTask);
       break;
     case '8' :
-        var trainDetailStation = functions.trainDetail(train,1,'stationVisited',range,choiceTask);
+        var trainDetailStation = functionsTrain.trainDetail(train,1,'stationVisited',range,choiceTask);
       break;
     default:
       console.log('Enter your choise with number and order for sorting');
